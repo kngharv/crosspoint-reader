@@ -8,6 +8,21 @@ Xteink firmware. It aims to match or improve upon the standard EPUB reading expe
 
 ![](./docs/images/cover.jpg)
 
+
+## Fork notes for XT EINK X4 Chinese support
+
+This fork contains a stable Chinese font snapshot for **XT EINK X4** based on the CrossPoint `1.1.1` version line.
+
+Current fork highlights:
+- stable Traditional Chinese reading font support
+- Chinese UI and filename rendering improvements
+- coverage for many common Simplified Chinese glyphs
+- changelog for this fork in [CHANGELOG.md](./CHANGELOG.md)
+- technical notes in [docs/xt-eink-x4-cjk-font-work.md](./docs/xt-eink-x4-cjk-font-work.md)
+
+This fork is currently focused on stable Chinese font support and documentation. Vertical Traditional Chinese layout support is planned but not yet implemented.
+
+
 ## Motivation
 
 E-paper devices are fantastic for reading, but most commercially available readers are closed systems with limited 
