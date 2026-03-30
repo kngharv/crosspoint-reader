@@ -739,7 +739,119 @@ if compress:
         (0x20A0, 0x20CF),   # Currency Symbols
         (0x2190, 0x21FF),   # Arrows
         (0x2200, 0x22FF),   # Math Operators
+        (0x2E80, 0x2EFF),   # CJK Radicals Supplement
+        (0x3000, 0x303F),   # CJK Symbols and Punctuation
+        (0x3400, 0x34FF),   # CJK Unified Ideographs Extension A-1
+        (0x3500, 0x35FF),   # CJK Unified Ideographs Extension A-2
+        (0x3600, 0x36FF),   # CJK Unified Ideographs Extension A-3
+        (0x3700, 0x37FF),   # CJK Unified Ideographs Extension A-4
+        (0x3800, 0x38FF),   # CJK Unified Ideographs Extension A-5
+        (0x3900, 0x39FF),   # CJK Unified Ideographs Extension A-6
+        (0x3A00, 0x3AFF),   # CJK Unified Ideographs Extension A-7
+        (0x3B00, 0x3BFF),   # CJK Unified Ideographs Extension A-8
+        (0x3C00, 0x3CFF),   # CJK Unified Ideographs Extension A-9
+        (0x3D00, 0x3DFF),   # CJK Unified Ideographs Extension A-10
+        (0x3E00, 0x3EFF),   # CJK Unified Ideographs Extension A-11
+        (0x3F00, 0x3FFF),   # CJK Unified Ideographs Extension A-12
+        (0x4000, 0x40FF),   # CJK Unified Ideographs Extension A-13
+        (0x4100, 0x41FF),   # CJK Unified Ideographs Extension A-14
+        (0x4200, 0x42FF),   # CJK Unified Ideographs Extension A-15
+        (0x4300, 0x43FF),   # CJK Unified Ideographs Extension A-16
+        (0x4400, 0x44FF),   # CJK Unified Ideographs Extension A-17
+        (0x4500, 0x45FF),   # CJK Unified Ideographs Extension A-18
+        (0x4600, 0x46FF),   # CJK Unified Ideographs Extension A-19
+        (0x4700, 0x47FF),   # CJK Unified Ideographs Extension A-20
+        (0x4800, 0x48FF),   # CJK Unified Ideographs Extension A-21
+        (0x4900, 0x49FF),   # CJK Unified Ideographs Extension A-22
+        (0x4A00, 0x4AFF),   # CJK Unified Ideographs Extension A-23
+        (0x4B00, 0x4BFF),   # CJK Unified Ideographs Extension A-24
+        (0x4C00, 0x4CFF),   # CJK Unified Ideographs Extension A-25
+        (0x4D00, 0x4DBF),   # CJK Unified Ideographs Extension A-26
+        (0x4E00, 0x4EFF),   # CJK Unified Ideographs-1
+        (0x4F00, 0x4FFF),   # CJK Unified Ideographs-2
+        (0x5000, 0x50FF),   # CJK Unified Ideographs-3
+        (0x5100, 0x51FF),   # CJK Unified Ideographs-4
+        (0x5200, 0x52FF),   # CJK Unified Ideographs-5
+        (0x5300, 0x53FF),   # CJK Unified Ideographs-6
+        (0x5400, 0x54FF),   # CJK Unified Ideographs-7
+        (0x5500, 0x55FF),   # CJK Unified Ideographs-8
+        (0x5600, 0x56FF),   # CJK Unified Ideographs-9
+        (0x5700, 0x57FF),   # CJK Unified Ideographs-10
+        (0x5800, 0x58FF),   # CJK Unified Ideographs-11
+        (0x5900, 0x59FF),   # CJK Unified Ideographs-12
+        (0x5A00, 0x5AFF),   # CJK Unified Ideographs-13
+        (0x5B00, 0x5BFF),   # CJK Unified Ideographs-14
+        (0x5C00, 0x5CFF),   # CJK Unified Ideographs-15
+        (0x5D00, 0x5DFF),   # CJK Unified Ideographs-16
+        (0x5E00, 0x5EFF),   # CJK Unified Ideographs-17
+        (0x5F00, 0x5FFF),   # CJK Unified Ideographs-18
+        (0x6000, 0x60FF),   # CJK Unified Ideographs-19
+        (0x6100, 0x61FF),   # CJK Unified Ideographs-20
+        (0x6200, 0x62FF),   # CJK Unified Ideographs-21
+        (0x6300, 0x63FF),   # CJK Unified Ideographs-22
+        (0x6400, 0x64FF),   # CJK Unified Ideographs-23
+        (0x6500, 0x65FF),   # CJK Unified Ideographs-24
+        (0x6600, 0x66FF),   # CJK Unified Ideographs-25
+        (0x6700, 0x67FF),   # CJK Unified Ideographs-26
+        (0x6800, 0x68FF),   # CJK Unified Ideographs-27
+        (0x6900, 0x69FF),   # CJK Unified Ideographs-28
+        (0x6A00, 0x6AFF),   # CJK Unified Ideographs-29
+        (0x6B00, 0x6BFF),   # CJK Unified Ideographs-30
+        (0x6C00, 0x6CFF),   # CJK Unified Ideographs-31
+        (0x6D00, 0x6DFF),   # CJK Unified Ideographs-32
+        (0x6E00, 0x6EFF),   # CJK Unified Ideographs-33
+        (0x6F00, 0x6FFF),   # CJK Unified Ideographs-34
+        (0x7000, 0x70FF),   # CJK Unified Ideographs-35
+        (0x7100, 0x71FF),   # CJK Unified Ideographs-36
+        (0x7200, 0x72FF),   # CJK Unified Ideographs-37
+        (0x7300, 0x73FF),   # CJK Unified Ideographs-38
+        (0x7400, 0x74FF),   # CJK Unified Ideographs-39
+        (0x7500, 0x75FF),   # CJK Unified Ideographs-40
+        (0x7600, 0x76FF),   # CJK Unified Ideographs-41
+        (0x7700, 0x77FF),   # CJK Unified Ideographs-42
+        (0x7800, 0x78FF),   # CJK Unified Ideographs-43
+        (0x7900, 0x79FF),   # CJK Unified Ideographs-44
+        (0x7A00, 0x7AFF),   # CJK Unified Ideographs-45
+        (0x7B00, 0x7BFF),   # CJK Unified Ideographs-46
+        (0x7C00, 0x7CFF),   # CJK Unified Ideographs-47
+        (0x7D00, 0x7DFF),   # CJK Unified Ideographs-48
+        (0x7E00, 0x7EFF),   # CJK Unified Ideographs-49
+        (0x7F00, 0x7FFF),   # CJK Unified Ideographs-50
+        (0x8000, 0x80FF),   # CJK Unified Ideographs-51
+        (0x8100, 0x81FF),   # CJK Unified Ideographs-52
+        (0x8200, 0x82FF),   # CJK Unified Ideographs-53
+        (0x8300, 0x83FF),   # CJK Unified Ideographs-54
+        (0x8400, 0x84FF),   # CJK Unified Ideographs-55
+        (0x8500, 0x85FF),   # CJK Unified Ideographs-56
+        (0x8600, 0x86FF),   # CJK Unified Ideographs-57
+        (0x8700, 0x87FF),   # CJK Unified Ideographs-58
+        (0x8800, 0x88FF),   # CJK Unified Ideographs-59
+        (0x8900, 0x89FF),   # CJK Unified Ideographs-60
+        (0x8A00, 0x8AFF),   # CJK Unified Ideographs-61
+        (0x8B00, 0x8BFF),   # CJK Unified Ideographs-62
+        (0x8C00, 0x8CFF),   # CJK Unified Ideographs-63
+        (0x8D00, 0x8DFF),   # CJK Unified Ideographs-64
+        (0x8E00, 0x8EFF),   # CJK Unified Ideographs-65
+        (0x8F00, 0x8FFF),   # CJK Unified Ideographs-66
+        (0x9000, 0x90FF),   # CJK Unified Ideographs-67
+        (0x9100, 0x91FF),   # CJK Unified Ideographs-68
+        (0x9200, 0x92FF),   # CJK Unified Ideographs-69
+        (0x9300, 0x93FF),   # CJK Unified Ideographs-70
+        (0x9400, 0x94FF),   # CJK Unified Ideographs-71
+        (0x9500, 0x95FF),   # CJK Unified Ideographs-72
+        (0x9600, 0x96FF),   # CJK Unified Ideographs-73
+        (0x9700, 0x97FF),   # CJK Unified Ideographs-74
+        (0x9800, 0x98FF),   # CJK Unified Ideographs-75
+        (0x9900, 0x99FF),   # CJK Unified Ideographs-76
+        (0x9A00, 0x9AFF),   # CJK Unified Ideographs-77
+        (0x9B00, 0x9BFF),   # CJK Unified Ideographs-78
+        (0x9C00, 0x9CFF),   # CJK Unified Ideographs-79
+        (0x9D00, 0x9DFF),   # CJK Unified Ideographs-80
+        (0x9E00, 0x9EFF),   # CJK Unified Ideographs-81
+        (0x9F00, 0x9FFF),   # CJK Unified Ideographs-82
+        (0xF900, 0xFAFF),   # CJK Compatibility Ideographs
         (0xFB00, 0xFB06),   # Alphabetic Presentation Forms (ligatures)
+        (0xFE30, 0xFE4F),   # CJK Compatibility Forms / Vertical Forms
         (0xFFFD, 0xFFFD),   # Replacement Character
     ]
 
