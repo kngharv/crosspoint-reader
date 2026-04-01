@@ -16,17 +16,21 @@ class TextBlock final : public Block {
   std::vector<int16_t> wordXpos;
   std::vector<EpdFontFamily::Style> wordStyles;
   BlockStyle blockStyle;
+  bool verticalLayout = false;
 
  public:
   explicit TextBlock(std::vector<std::string> words, std::vector<int16_t> word_xpos,
-                     std::vector<EpdFontFamily::Style> word_styles, const BlockStyle& blockStyle = BlockStyle())
+                     std::vector<EpdFontFamily::Style> word_styles, const BlockStyle& blockStyle = BlockStyle(),
+                     const bool verticalLayout = false)
       : words(std::move(words)),
         wordXpos(std::move(word_xpos)),
         wordStyles(std::move(word_styles)),
-        blockStyle(blockStyle) {}
+        blockStyle(blockStyle),
+        verticalLayout(verticalLayout) {}
   ~TextBlock() override = default;
   void setBlockStyle(const BlockStyle& blockStyle) { this->blockStyle = blockStyle; }
   const BlockStyle& getBlockStyle() const { return blockStyle; }
+  bool isVerticalLayout() const { return verticalLayout; }
   const std::vector<std::string>& getWords() const { return words; }
   bool isEmpty() override { return words.empty(); }
   size_t wordCount() const { return words.size(); }

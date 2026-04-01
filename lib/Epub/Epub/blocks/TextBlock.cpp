@@ -12,6 +12,52 @@ void TextBlock::render(const GfxRenderer& renderer, const int fontId, const int 
     return;
   }
 
+  if (verticalLayout) {
+    for (size_t i = 0; i < words.size(); i++) {
+      const int wordY = wordXpos[i] + y;
+      const EpdFontFamily::Style currentStyle = wordStyles[i];
+      const std::string& w = words[i];
+
+      size_t pos = 0;
+      int currentY = wordY;
+      while (pos < w.size()) {
+        const uint8_t c = static_cast<uint8_t>(w[pos]);
+        size_t len = 1;
+        if ((c & 0x80) == 0x00) {
+          len = 1;
+        } else if ((c & 0xE0) == 0xC0) {
+          len = 2;
+        } else if ((c & 0xF0) == 0xE0) {
+          len = 3;
+        } else if ((c & 0xF8) == 0xF0) {
+          len = 4;
+        }
+
+        if (pos + len > w.size()) {
+          len = 1;
+        }
+
+        const std::string glyph = w.substr(pos, len);
+        renderer.drawText(fontId, x, currentY, glyph.c_str(), true, currentStyle);
+
+        const bool isSpaceLikeGlyph =
+            glyph == " " || glyph == "\xC2\xA0" || glyph == "\xE2\x80\x82" || glyph == "\xE2\x80\x83" ||
+            glyph == "\xE3\x80\x80";
+
+        if (isSpaceLikeGlyph) {
+          currentY += renderer.getSpaceWidth(fontId, currentStyle);
+        } else {
+          const int glyphAdvance = renderer.getTextAdvanceX(fontId, glyph.c_str(), currentStyle);
+          const int minVerticalAdvance = renderer.getTextHeight(fontId);
+          currentY += (glyphAdvance < minVerticalAdvance) ? minVerticalAdvance : glyphAdvance;
+        }
+
+        pos += len;
+      }
+    }
+    return;
+  }
+
   for (size_t i = 0; i < words.size(); i++) {
     const int wordX = wordXpos[i] + x;
     const EpdFontFamily::Style currentStyle = wordStyles[i];
@@ -67,6 +113,7 @@ bool TextBlock::serialize(FsFile& file) const {
   serialization::writePod(file, blockStyle.paddingRight);
   serialization::writePod(file, blockStyle.textIndent);
   serialization::writePod(file, blockStyle.textIndentDefined);
+  serialization::writePod(file, verticalLayout);
 
   return true;
 }
@@ -77,6 +124,7 @@ std::unique_ptr<TextBlock> TextBlock::deserialize(FsFile& file) {
   std::vector<int16_t> wordXpos;
   std::vector<EpdFontFamily::Style> wordStyles;
   BlockStyle blockStyle;
+  bool verticalLayout = false;
 
   // Word count
   serialization::readPod(file, wc);
@@ -108,7 +156,8 @@ std::unique_ptr<TextBlock> TextBlock::deserialize(FsFile& file) {
   serialization::readPod(file, blockStyle.paddingRight);
   serialization::readPod(file, blockStyle.textIndent);
   serialization::readPod(file, blockStyle.textIndentDefined);
+  serialization::readPod(file, verticalLayout);
 
   return std::unique_ptr<TextBlock>(
-      new TextBlock(std::move(words), std::move(wordXpos), std::move(wordStyles), blockStyle));
+      new TextBlock(std::move(words), std::move(wordXpos), std::move(wordStyles), blockStyle, verticalLayout));
 }

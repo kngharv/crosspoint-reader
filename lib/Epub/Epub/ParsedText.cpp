@@ -51,18 +51,45 @@ void stripSoftHyphensInPlace(std::string& word) {
   }
 }
 
+bool isSpaceLikeCodepoint(const uint32_t cp) {
+  return cp == 0x0020 || cp == 0x00A0 || cp == 0x2002 || cp == 0x2003 || cp == 0x3000;
+}
+
+uint16_t measureVerticalTextAdvance(const GfxRenderer& renderer, const int fontId, const std::string& text,
+                                    const EpdFontFamily::Style style) {
+  const auto* ptr = reinterpret_cast<const unsigned char*>(text.c_str());
+  int totalAdvance = 0;
+
+  while (true) {
+    const auto* glyphStart = ptr;
+    const uint32_t cp = utf8NextCodepoint(&ptr);
+    if (cp == 0) break;
+
+    const size_t glyphLen = reinterpret_cast<const char*>(ptr) - reinterpret_cast<const char*>(glyphStart);
+    const std::string glyph(reinterpret_cast<const char*>(glyphStart), glyphLen);
+
+    if (isSpaceLikeCodepoint(cp)) {
+      totalAdvance += renderer.getSpaceWidth(fontId, style);
+    } else {
+      const int glyphAdvance = renderer.getTextAdvanceX(fontId, glyph.c_str(), style);
+      const int minVerticalAdvance = renderer.getTextHeight(fontId);
+      totalAdvance += (glyphAdvance < minVerticalAdvance) ? minVerticalAdvance : glyphAdvance;
+    }
+  }
+
+  return static_cast<uint16_t>(totalAdvance);
+}
+
 // Returns the advance width for a word while ignoring soft hyphen glyphs and optionally appending a visible hyphen.
 // Uses advance width (sum of glyph advances + kerning) rather than bounding box width so that italic glyph overhangs
 // don't inflate inter-word spacing.
 uint16_t measureWordWidth(const GfxRenderer& renderer, const int fontId, const std::string& word,
-                          const EpdFontFamily::Style style, const bool appendHyphen = false) {
+                          const EpdFontFamily::Style style, const bool appendHyphen = false,
+                          const bool verticalLayout = false) {
   if (word.size() == 1 && word[0] == ' ' && !appendHyphen) {
     return renderer.getSpaceWidth(fontId, style);
   }
   const bool hasSoftHyphen = containsSoftHyphen(word);
-  if (!hasSoftHyphen && !appendHyphen) {
-    return renderer.getTextAdvanceX(fontId, word.c_str(), style);
-  }
 
   std::string sanitized = word;
   if (hasSoftHyphen) {
@@ -71,6 +98,11 @@ uint16_t measureWordWidth(const GfxRenderer& renderer, const int fontId, const s
   if (appendHyphen) {
     sanitized.push_back('-');
   }
+
+  if (verticalLayout) {
+    return measureVerticalTextAdvance(renderer, fontId, sanitized, style);
+  }
+
   return renderer.getTextAdvanceX(fontId, sanitized.c_str(), style);
 }
 
@@ -130,7 +162,7 @@ std::vector<uint16_t> ParsedText::calculateWordWidths(const GfxRenderer& rendere
   wordWidths.reserve(words.size());
 
   for (size_t i = 0; i < words.size(); ++i) {
-    wordWidths.push_back(measureWordWidth(renderer, fontId, words[i], wordStyles[i]));
+    wordWidths.push_back(measureWordWidth(renderer, fontId, words[i], wordStyles[i], false, verticalLayout));
   }
 
   return wordWidths;
@@ -379,15 +411,16 @@ bool ParsedText::hyphenateWordAtIndex(const size_t wordIndex, const int availabl
       continue;
     }
 
-    const bool needsHyphen = info.requiresInsertedHyphen;
-    const int prefixWidth = measureWordWidth(renderer, fontId, word.substr(0, offset), style, needsHyphen);
+    const bool appendVisibleHyphen = hyphenationEnabled && info.requiresInsertedHyphen;
+    const int prefixWidth =
+        measureWordWidth(renderer, fontId, word.substr(0, offset), style, appendVisibleHyphen, verticalLayout);
     if (prefixWidth > availableWidth || prefixWidth <= chosenWidth) {
       continue;  // Skip if too wide or not an improvement
     }
 
     chosenWidth = prefixWidth;
     chosenOffset = offset;
-    chosenNeedsHyphen = needsHyphen;
+    chosenNeedsHyphen = appendVisibleHyphen;
   }
 
   if (chosenWidth < 0) {
@@ -430,7 +463,7 @@ bool ParsedText::hyphenateWordAtIndex(const size_t wordIndex, const int availabl
 
   // Update cached widths to reflect the new prefix/remainder pairing.
   wordWidths[wordIndex] = static_cast<uint16_t>(chosenWidth);
-  const uint16_t remainderWidth = measureWordWidth(renderer, fontId, remainder, style);
+  const uint16_t remainderWidth = measureWordWidth(renderer, fontId, remainder, style, false, verticalLayout);
   wordWidths.insert(wordWidths.begin() + wordIndex + 1, remainderWidth);
   return true;
 }
@@ -536,6 +569,6 @@ void ParsedText::extractLine(const size_t breakIndex, const int pageWidth, const
     }
   }
 
-  processLine(
-      std::make_shared<TextBlock>(std::move(lineWords), std::move(lineXPos), std::move(lineWordStyles), blockStyle));
+  processLine(std::make_shared<TextBlock>(std::move(lineWords), std::move(lineXPos), std::move(lineWordStyles),
+                                              blockStyle, verticalLayout));
 }

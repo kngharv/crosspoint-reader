@@ -40,6 +40,7 @@ class ChapterHtmlSlimParser {
   std::unique_ptr<ParsedText> currentTextBlock = nullptr;
   std::unique_ptr<Page> currentPage = nullptr;
   int16_t currentPageNextY = 0;
+  int16_t currentPageNextX = 0;
   int fontId;
   float lineCompression;
   bool extraParagraphSpacing;
@@ -50,6 +51,7 @@ class ChapterHtmlSlimParser {
   const CssParser* cssParser;
   bool embeddedStyle;
   uint8_t imageRendering;
+  bool verticalLayout = false;
   std::string contentBase;
   std::string imageBasePath;
   int imageCounter = 0;
@@ -102,7 +104,8 @@ class ChapterHtmlSlimParser {
                                  const std::function<void(std::unique_ptr<Page>)>& completePageFn,
                                  const bool embeddedStyle, const std::string& contentBase,
                                  const std::string& imageBasePath, const uint8_t imageRendering = 0,
-                                 const std::function<void()>& popupFn = nullptr, const CssParser* cssParser = nullptr)
+                                 const std::function<void()>& popupFn = nullptr, const CssParser* cssParser = nullptr,
+                                 const bool verticalLayout = false)
 
       : epub(epub),
         filepath(filepath),
@@ -119,6 +122,7 @@ class ChapterHtmlSlimParser {
         cssParser(cssParser),
         embeddedStyle(embeddedStyle),
         imageRendering(imageRendering),
+        verticalLayout(verticalLayout),
         contentBase(contentBase),
         imageBasePath(imageBasePath) {}
 

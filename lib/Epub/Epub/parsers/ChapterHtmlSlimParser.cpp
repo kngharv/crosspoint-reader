@@ -149,7 +149,7 @@ void ChapterHtmlSlimParser::startNewTextBlock(const BlockStyle& blockStyle) {
     anchorData.push_back({std::move(pendingAnchorId), static_cast<uint16_t>(completedPageCount)});
     pendingAnchorId.clear();
   }
-  currentTextBlock.reset(new ParsedText(extraParagraphSpacing, hyphenationEnabled, blockStyle));
+  currentTextBlock.reset(new ParsedText(extraParagraphSpacing, hyphenationEnabled, blockStyle, verticalLayout));
   wordsExtractedInBlock = 0;
 }
 
@@ -1074,6 +1074,37 @@ bool ChapterHtmlSlimParser::parseAndBuildPages() {
 void ChapterHtmlSlimParser::addLineToPage(std::shared_ptr<TextBlock> line) {
   const int lineHeight = renderer.getLineHeight(fontId) * lineCompression;
 
+  if (line->isVerticalLayout()) {
+    if (!currentPage) {
+      currentPage.reset(new Page());
+      currentPageNextY = 0;
+      currentPageNextX = viewportWidth - lineHeight;
+    }
+
+    if (currentPageNextX - line->getBlockStyle().rightInset() < 0) {
+      completePageFn(std::move(currentPage));
+      completedPageCount++;
+      currentPage.reset(new Page());
+      currentPageNextY = 0;
+      currentPageNextX = viewportWidth - lineHeight;
+    }
+
+    // Track cumulative words to assign footnotes to the page containing their anchor
+    wordsExtractedInBlock += line->wordCount();
+    auto footnoteIt = pendingFootnotes.begin();
+    while (footnoteIt != pendingFootnotes.end() && footnoteIt->first <= wordsExtractedInBlock) {
+      currentPage->addFootnote(footnoteIt->second.number, footnoteIt->second.href);
+      ++footnoteIt;
+    }
+    pendingFootnotes.erase(pendingFootnotes.begin(), footnoteIt);
+
+    const int16_t xOffset = currentPageNextX - line->getBlockStyle().rightInset();
+    const int16_t yOffset = line->getBlockStyle().topInset();
+    currentPage->elements.push_back(std::make_shared<PageLine>(line, xOffset, yOffset));
+    currentPageNextX -= lineHeight;
+    return;
+  }
+
   if (!currentPage) {
     currentPage.reset(new Page());
     currentPageNextY = 0;
@@ -1107,15 +1138,61 @@ void ChapterHtmlSlimParser::makePages() {
     return;
   }
 
+  const int lineHeight = renderer.getLineHeight(fontId) * lineCompression;
+  const BlockStyle& blockStyle = currentTextBlock->getBlockStyle();
+
+  if (verticalLayout) {
+    if (!currentPage) {
+      currentPage.reset(new Page());
+      currentPageNextY = 0;
+      currentPageNextX = viewportWidth - lineHeight;
+    }
+
+    // Apply pre-paragraph spacing on the right side before laying out columns
+    if (blockStyle.marginRight > 0) {
+      currentPageNextX -= blockStyle.marginRight;
+    }
+    if (blockStyle.paddingRight > 0) {
+      currentPageNextX -= blockStyle.paddingRight;
+    }
+
+    // In vertical layout, available inline space is page height minus top/bottom insets
+    const int verticalInset = blockStyle.totalVerticalInset();
+    const uint16_t effectiveHeight =
+        (verticalInset < viewportHeight) ? static_cast<uint16_t>(viewportHeight - verticalInset) : viewportHeight;
+
+    currentTextBlock->layoutAndExtractLines(
+        renderer, fontId, effectiveHeight,
+        [this](const std::shared_ptr<TextBlock>& textBlock) { addLineToPage(textBlock); });
+
+    // Fallback: transfer any remaining pending footnotes to current page.
+    if (!pendingFootnotes.empty() && currentPage) {
+      for (const auto& [idx, fn] : pendingFootnotes) {
+        currentPage->addFootnote(fn.number, fn.href);
+      }
+      pendingFootnotes.clear();
+    }
+
+    // Apply post-paragraph spacing on the left side after laying out columns
+    if (blockStyle.marginLeft > 0) {
+      currentPageNextX -= blockStyle.marginLeft;
+    }
+    if (blockStyle.paddingLeft > 0) {
+      currentPageNextX -= blockStyle.paddingLeft;
+    }
+
+    if (extraParagraphSpacing) {
+      currentPageNextX -= lineHeight / 2;
+    }
+    return;
+  }
+
   if (!currentPage) {
     currentPage.reset(new Page());
     currentPageNextY = 0;
   }
 
-  const int lineHeight = renderer.getLineHeight(fontId) * lineCompression;
-
   // Apply top spacing before the paragraph (stored in pixels)
-  const BlockStyle& blockStyle = currentTextBlock->getBlockStyle();
   if (blockStyle.marginTop > 0) {
     currentPageNextY += blockStyle.marginTop;
   }
