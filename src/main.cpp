@@ -87,22 +87,22 @@ EpdFont notosans18BoldItalicFont(&notosans_18_bolditalic);
 EpdFontFamily notosans18FontFamily(&notosans18RegularFont, &notosans18BoldFont, &notosans18ItalicFont,
                                    &notosans18BoldItalicFont);
 
-EpdFont notosanstc14RegularFont(&sourcehanseriftc_regular_grouped_14_regular);
+EpdFont notosanstc14RegularFont(&lxgwwenkaimono_tcsc4900_15_regular);
 EpdFontFamily opendyslexic8FontFamily(&notosanstc14RegularFont);
 EpdFontFamily opendyslexic10FontFamily(&notosanstc14RegularFont);
 EpdFontFamily opendyslexic12FontFamily(&notosanstc14RegularFont);
 EpdFontFamily opendyslexic14FontFamily(&notosanstc14RegularFont);
 #endif  // OMIT_FONTS
 
-EpdFont smallFont(&chironheihk_textr_ui_10_regular);
+EpdFont smallFont(&wqymicrohei_ui_11_regular);
 EpdFontFamily smallFontFamily(&smallFont);
 
-EpdFont ui10RegularFont(&chironheihk_textr_ui_10_regular);
-EpdFont ui10BoldFont(&chironheihk_textr_ui_10_regular);
+EpdFont ui10RegularFont(&wqymicrohei_ui_11_regular);
+EpdFont ui10BoldFont(&wqymicrohei_ui_11_regular);
 EpdFontFamily ui10FontFamily(&ui10RegularFont, &ui10BoldFont);
 
-EpdFont ui12RegularFont(&chironheihk_textr_ui_10_regular);
-EpdFont ui12BoldFont(&chironheihk_textr_ui_10_regular);
+EpdFont ui12RegularFont(&wqymicrohei_ui_11_regular);
+EpdFont ui12BoldFont(&wqymicrohei_ui_11_regular);
 EpdFontFamily ui12FontFamily(&ui12RegularFont, &ui12BoldFont);
 
 // measurement of power button press duration calibration value
